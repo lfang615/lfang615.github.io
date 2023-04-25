@@ -62,6 +62,17 @@ sequenceDiagram
     order_resolver-->kafka_topics: Send updated position to positions_updated
 ```
 
+**_Quick overview of the services responsibilities_**
+
+*Tip* - It occurred to me after I decided to create a mermaid diagram , but for those using ChatGPT-4 (intended audience) through the chat interface you've probably realized they've gated its multimodal capabilities by preventing you from uploading images through the chat interface. Mermaid syntax can be a way around it, at least as far as diagrams are concerned. By using mermaid syntax to visually communicate your project to ChatGPT-4 along with some crafty prompt engineering you can bootrap a project VERY quickly.
+
+### Overview of each service and their responsibility
+
+1. order_manager
+  - 
+3. order_resolver
+4. Kafka
+5. **Redis 
 
 
 
