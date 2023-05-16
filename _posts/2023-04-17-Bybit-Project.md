@@ -25,7 +25,7 @@ This project was started to resolve those annoyances and to explore various tool
 
 ### Communication Diagram
 
-```mermaid
+<div class="mermaid">
 sequenceDiagram
     participant order_manager
     participant kafka_topics
@@ -59,7 +59,7 @@ sequenceDiagram
     end
     order_resolver-->>kafka_topics: Send updated order to orders_resolved
     order_resolver-->>kafka_topics: Send updated position to positions_updated
-```
+</div>
 
 ## _Quick overview of the services responsibilities_
 
