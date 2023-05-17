@@ -24,7 +24,42 @@ This project was started to resolve those annoyances and to explore various tool
 - The README in the project repo will contain a list of the available features.
 
 ### Communication Diagram
-![Communication Diagram](img/mermaid-diagram-2023-05-16-111330.svg)
+
+```mermaid
+sequenceDiagram
+    participant order_manager
+    participant kafka_topics
+    participant redis
+    participant order_resolver
+    participant bybit
+    activate order_manager
+    Note left of order_manager: order submitted
+    order_manager-->>bybit: /contract/v3/private/order/create {orderLinkId}
+    bybit-->>order_manager: Success/Fail
+    alt Fail
+        order_manager->>order_manager: Display Error
+    else Success
+        order_manager-->>kafka_topics: orders_executed
+    end
+    loop consume from orders_executed
+        kafka_topics-->>order_resolver: "Set orderLinkId in orders cache"      
+    end
+    loop Check for order status changes
+        order_resolver-->>bybit: Status changes for orderLinkId?
+    end
+    bybit-->>order_resolver: Order Response
+    loop Update orders and/or positions caches
+        alt Status in ["Filled", "Cancelled", "Deactivated", "Triggered"]
+            order_resolver-->>redis: Update orders:orderLinkId and BREAK BGTask
+        else Status in ["Filled", "PartiallyFilled"]
+            order_resolver-->>redis: Update positions:symbol:side
+        else order[orderStatus] != orderStatus
+            order_resolver-->>redis: Update orders:orderLinkId
+        end
+    end
+    order_resolver-->>kafka_topics: Send updated order to orders_resolved
+    order_resolver-->>kafka_topics: Send updated position to positions_updated
+```
 
 
 ## _Quick overview of the services responsibilities_
