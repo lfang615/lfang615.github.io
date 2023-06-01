@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Trade on Bybit without the VPN hassle"
+title: "Tool for trading cyprto derivatives on multiple platforms"
 date: 2023-04-11
 categories: kubernetes containers devops distributed kafka redis
 thumbnail-img: ""
@@ -12,17 +12,24 @@ js:
 
 When taking upon an interest in capital markets, you'll sooner or later bear the burden of navigating the regulations that govern these markets. Then if your curiousities ever lead you to browse around and compare financial services offered in comporable developed first world nations, it'll become apparent (*not much analytical skills needed*) that the U.S. is much more strict as to how they allow their residents to partipate in the markets.
 
-For those among the crypto crowd in the U.S. researching crypto exchanges offering derivitive products, you may have narrowed in on Bybit as a suitable candidate for your trading activities, since their KYC policies are more liberal compared to the other players in the space. They provide 2 separate platforms, one for U.S. residents and another for everyone else abroad. For those with a little technical know how, I'm sure you can figure out how to access the latter (*tip* there's a clue in the title of the post).
+For those among the crypto crowd in the U.S. researching crypto exchanges offering derivitive products, you may have narrowed in on Bybit as a suitable candidate for your trading activities, since their KYC policies are more liberal compared to the other players in the space. They provide 2 separate platforms, one for U.S. residents and another for everyone else abroad. For those with a little technical know how, I'm sure you can figure out how to access the latter.
 
-Using the method above pigeon holes you to their web app to make trades which is only made available in the desktop version of their platform, making usability a nightmare. Mobile VPN connections, in my experience can't be relied on to provide stable connections (*from my provider at least*) for long durations which causes the site the session to become invalid and ultimately creates an annoying loop of reconnecting to VPN server, inputing login details, fetching the multifactor code from Google Authenticator, every time I want to place a trade when I'm away from the a desktop.
+Using the method above pigeon holes you to their web app to make trades which is only made available in the desktop version of their platform, making usability a nightmare. Mobile VPN connections, in my experience can't be relied on to provide stable connections (*from my provider at least*) for long durations which causes the site the session to become invalid and ultimately creates an annoying loop of reconnecting to VPN server, inputing login details, fetching the multifactor code from Google Authenticator, every time I want to place a trade when I'm away from the a desktop. This project was started to resolve those annoyances and to explore various tools used in distributed systems.
 
-This project was started to resolve those annoyances and to explore various tools used in distributed systems
+*Update 4-30-2023*
+Just a few days after beginning the project, Bybit announced that they will be adapting KYC measures for all current and future users of the platform, thereby negating my original motivation for developing this tool in the first place. However it did force me to think of ways to repurpose the functionality that had already been developed. Instead of limiting the tool to one exchange I applied one of the guiding principles of clean software development, extensibility and created an interface defining the common ordering, market data fetching, and account balance capabilities that are common to all trading platforms, irrespective of any particular asset.
+
+*Update 05-15-2023*
+
+
 
 [Project Repo](https://github.com/lfang615/bybit-service)
 
 ## Description
  
 - Motivations were described above, but the primary utility was to have a self hosted layer I can use to interact with Bybit.
+  - *Update 05-20-2023* - Has been updated with an abstract class which utilizes the [CCXT](https://docs.ccxt.com/#/README). CCXT provides a common structure that can be used to interact with an impresive list of crypto exchanges (*wish I found ccxt when I started the project*).
+-    
 - The README in the project repo will contain a list of the available features.
 
 ### Communication Diagram
