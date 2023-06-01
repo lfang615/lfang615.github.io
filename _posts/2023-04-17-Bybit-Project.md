@@ -17,19 +17,22 @@ For those among the crypto crowd in the U.S. researching crypto exchanges offeri
 Using the method above pigeon holes you to their web app to make trades which is only made available in the desktop version of their platform, making usability a nightmare. Mobile VPN connections, in my experience can't be relied on to provide stable connections (*from my provider at least*) for long durations which causes the site the session to become invalid and ultimately creates an annoying loop of reconnecting to VPN server, inputing login details, fetching the multifactor code from Google Authenticator, every time I want to place a trade when I'm away from the a desktop. This project was started to resolve those annoyances and to explore various tools used in distributed systems.
 
 *Update 4-30-2023*
-Just a few days after beginning the project, Bybit announced that they will be adopting KYC measures for all current and future users of the platform, thereby negating my original motivation for developing this tool in the first place. However it did force me to think of ways to repurpose the functionality that had already been developed. Instead of limiting the tool to one exchange I applied one of the guiding principles of clean software development, extensibility and created an interface defining the common ordering, market data fetching, and account balance capabilities that are common to all trading platforms, irrespective of any particular asset.
+Just a few days after beginning the project, Bybit announced that they will be adopting KYC measures for all current and future users of the platform, thereby negating my original motivation for developing this tool in the first place. However it did force me to think of ways to repurpose the functionality that had already been developed. Instead of limiting the tool to interface with one exchange I applied one of the guiding principles of clean software development, extensibility and created an interface defining the common ordering, market data fetching, and account balance capabilities that are common to all trading platforms, irrespective of any particular asset.
 
 *Update 05-15-2023*
-
+After laboring through the rewrite and associated unit tests to use the interface mentioned in the previous update I found the [CCXT](https://docs.ccxt.com/#/README) package which is a popular and well supported package which provides a common interface to interact with all currently relevant crypto exchanges (everything I required and more, developed better). That discovery served as a frustrating but necessary reminder to always research to see what's available before you needlessly reinvent the wheel. *Currently updating the project repo to use the CXXT library*.
 
 
 [Project Repo](https://github.com/lfang615/bybit-service)
 
 ## Description
  
-- Motivations were described above, but the primary utility was to have a self hosted layer I can use to interact with Bybit.
-  - *Update 05-20-2023* - Has been updated with an abstract class which utilizes the [CCXT](https://docs.ccxt.com/#/README). CCXT provides a common structure that can be used to interact with an impresive list of crypto exchanges (*wish I found ccxt when I started the project*).
--    
+- ~~Motivations were described above, but the primary utility was to have a self hosted layer I can use to interact with Bybit.~~
+- Application that allows you to execute, view and manage orders with any exchange supported by [CCXT](https://docs.ccxt.com/#/README) which offers derivitive/contract trading.
+- The interface in the project is utilized as a wrapper for the common [CCXT](https://docs.ccxt.com/#/README) functions associated with dervitives orders.
+  - Currently only concrete implementations for Bitget and Bybit are available.
+- Microservice architecture, responsibilities of each service are described in further detail in the section below.
+- *Update 05-20-2023* - Has been updated with an abstract class which utilizes the [CCXT](https://docs.ccxt.com/#/README) package. CCXT provides a common structure that can be used to interact with an impresive list of crypto exchanges (*wish I found ccxt when I started the project*).
 - The README in the project repo will contain a list of the available features.
 
 ### Communication Diagram
@@ -70,18 +73,24 @@ sequenceDiagram
     order_resolver-->>kafka_topics: Send updated position to positions_updated
 </div>
 
-
-## _Quick overview of the services responsibilities_
-
-*Tip* - It occurred to me after I decided to create a mermaid diagram , but for those using ChatGPT-4 (intended audience) through the chat interface you've probably realized they've gated its multimodal capabilities by preventing you from uploading images through the chat interface. Mermaid syntax can be a way around it, at least as far as diagrams are concerned. By using mermaid syntax to visually communicate your project to ChatGPT-4 along with some crafty prompt engineering you can bootrap a project VERY quickly.
-
 ### Overview of each service and their responsibility
 
-1. order_manager
-  - 
-3. order_resolver
-4. Kafka
-5. **Redis 
+1. **order_manager**
+  - Accept and validate order details. Routes order to appropriate exchange
+  - Contains Kafka producer which sends successfully submitted order to *orders_executed* topic. 
+  - Two WebSocket available for connection
+    1. */ws/orders* - Updates frontend with updated orders consumed from *updated_orders* Kafka topic. In the event of the WebSocket disconnecting, data will be streamed from an offset defined at the moment of disconnection.
+    2. *ws/positions* - Updates frontend with updated position information. Event replay used for */ws/orders* also applies here. Position data will be replayed from the offset defined during WebSocket disconnection.
+  - Contains 2 Kafka consumers
+    1. Listens to *orders_updated* topic. Data is sent to */ws/orders*, populating respective grid on the frontend. 
+    2. Listens to *positions_updated* topic. Data is sent to */ws/orders*, populating respective grid on the frontend.
+3. **order_resolver**
+  - Serves as the workload for sending requests to external exchange APIs. 
+  - Evaluates any relevant information returned from external APIs that should trigger the update to Redis caches. 
+  - Sends relevant position & order data to the *orders_updated* and *orders_executed* topics which feeds the WebSocket connections that the frontend is connected to.
+4. **frontend**
+5. **Kafka**
+6. **Redis** 
 
 
 
