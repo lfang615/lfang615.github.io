@@ -52,7 +52,9 @@ This tool is comprised of 5 microservices, order manager, telegram bot, backgrou
 
 ## Instructions to run locally
 
-
+**Repository Links:**
+- [order manager](https://github.com/lfang615/crypto_trading_service)
+- [telegram bot](https://github.com/lfang615/telegram_crypto_futures) 
 
 
     
