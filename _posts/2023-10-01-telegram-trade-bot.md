@@ -56,6 +56,24 @@ This tool is comprised of 5 microservices, order manager, telegram bot, backgrou
 - [order manager](https://github.com/lfang615/crypto_trading_service)
 - [telegram bot](https://github.com/lfang615/telegram_crypto_futures) 
 
+**Configuring order manager**
 
+After cloning the repository, navigate to the directory and execute `docker-compose up -d` inside a terminal shell to start the services.
+
+There are python scripts located under */dev_utilities* for creating a user and adding your chosen exchanges api keys and secrets.
+
+1. Create a user
+Inside the project directory execute the following:
+``` shell
+python3 seed_user.py --username <username> --password <password>
+```
+
+2. Integrating exchanges
+As mentioned earlier under [Motivations](#Motivations), this app aims to limit the integrations provided by [ccxt](https://docs.ccxt.com/#/README) to only those which offer futures contracts. The integrations I have included so far are limited to Bybit, Bitget and MEXC. To integrate other exchanges, create a class deriving from **AbstractExchange** located in */app/exchanges/integrations.py*
+
+To integrate an exchange, browse to the exchanges platform and go through the steps to generate an api key and secret for your account. Add the key and secret to the application by executing the following command that is again, located under */dev_utilities*.
+```shell
+python3 update_user.py <name of exchange> --apikey <apikey> --secret <api_secret> --username <username>
+```
     
     
