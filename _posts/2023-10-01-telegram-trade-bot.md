@@ -28,4 +28,6 @@ The popular ccxt library provides integrations to seemingly all crypto exchanges
 3. **Telegram Bot**
 This service uses the telegram bot api to serve as the user interface to submit orders to order manager. Below shows examples of the available commands that can be used in the Telegram bot.
   - **/help**
-    Displays a list of available commands.
+    - Displays a list of available commands.
+    - 
+    
