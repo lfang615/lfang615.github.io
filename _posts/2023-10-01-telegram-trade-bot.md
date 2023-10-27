@@ -22,9 +22,10 @@ The aim of this project was to eliminate that bit of waste (after some initial c
 This tool is comprised of 4 microservices, order manager, telegram bot, background service, Redis, and MongoDB. Their responsibilities are described below respectively, but in summary Telegram is used as the interface to submit crypto futures order to a separate service (order_manager),
 built using the FastAPI framework which acts as a wrapper over the popular [CCXT](https://docs.ccxt.com/#/README) library.
 
-1. order manager
-  The popular ccxt library provides integrations to seemingly all crypto exchanges in operation currently and became an obvious choice since its needless to reinvent the wheel. I further abstracted the functionality provided by ccxt to limit interactions to only those exchanges which offer futures derivatives using a class named *Abstract Exchange*. You can add on future exchange integrations by deriving from this class. Further details are available in the README of the repository.
-2. telegram bot
+1. **Order Manager**
+The popular ccxt library provides integrations to seemingly all crypto exchanges in operation currently and became an obvious choice since its needless to reinvent the wheel. I further abstracted the functionality provided by ccxt to limit interactions to only those exchanges which offer futures derivatives using a class named *Abstract Exchange*. You can add on future exchange integrations by deriving from this class. Further details are available in the README of the repository.
+
+3. **Telegram Bot**
 This service uses the telegram bot api to serve as the user interface to submit orders to order manager. Below shows examples of the available commands that can be used in the Telegram bot.
   - **/help**
     Displays a list of available commands.
