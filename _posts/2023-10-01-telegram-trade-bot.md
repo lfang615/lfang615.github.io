@@ -15,8 +15,6 @@ Like most all software projects that have come before, this one was also inspire
 The aim of this project was to eliminate that bit of waste (after some initial configurations which I’ll walk you through) by utilizing the API endpoints of my adopted choice of exchanges. Along with added convenience the experience also allows me to exercise with technologies involved in today’s microservice environments.
 
 
-[Project Repo](https://github.com/lfang615/bybit-service)
-
 ## Description
  
 This tool is comprised of 5 microservices, order manager, telegram bot, background service, Redis, and MongoDB. Their responsibilities are described below respectively, but in in a nutshell Telegram is used as the user interface to submit crypto futures orders to a separate service (order manager), built using the FastAPI framework which acts as a wrapper over the popular [CCXT](https://docs.ccxt.com/#/README) library, exposing actions that can be taken on your chosen exchanges.
