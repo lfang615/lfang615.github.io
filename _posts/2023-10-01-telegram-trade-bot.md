@@ -19,15 +19,33 @@ The aim of this project was to eliminate that bit of waste (after some initial c
 
 ## Description
  
-This tool is comprised of 4 microservices, order manager, telegram bot, background service, Redis, and MongoDB. Their responsibilities are described below respectively, but in summary Telegram is used as the interface to submit crypto futures order to a separate service (order_manager),
-built using the FastAPI framework which acts as a wrapper over the popular [CCXT](https://docs.ccxt.com/#/README) library.
+This tool is comprised of 5 microservices, order manager, telegram bot, background service, Redis, and MongoDB. Their responsibilities are described below respectively, but in in a nutshell Telegram is used as the user interface to submit crypto futures orders to a separate service (order manager), built using the FastAPI framework which acts as a wrapper over the popular [CCXT](https://docs.ccxt.com/#/README) library, exposing actions that can be taken on your chosen exchanges.
 
 1. **Order Manager**
-The popular ccxt library provides integrations to seemingly all crypto exchanges in operation currently and became an obvious choice since its needless to reinvent the wheel. I further abstracted the functionality provided by ccxt to limit interactions to only those exchanges which offer futures derivatives using a class named *Abstract Exchange*. You can add on future exchange integrations by deriving from this class. Further details are available in the README of the repository.
+> Exposes the functionality that can be taken on configured exchanges (built using FastAPI). It utilizes the popular ccxt library, which provides integrations to seemingly all crypto exchanges in operation currently and became an obvious choice since its needless to reinvent the wheel. I further abstracted the functionality provided by ccxt to limit interactions to only those exchanges which offer futures derivatives using a class named *Abstract Exchange*. You can add on future exchange integrations by deriving from this class. Further details are available in the README of the repository.
 
-3. **Telegram Bot**
-This service uses the telegram bot api to serve as the user interface to submit orders to order manager. Below shows examples of the available commands that can be used in the Telegram bot.
+2. **Telegram Bot**
+> This service uses the telegram bot api to serve as the user interface to submit orders to order manager. Below shows examples of the available commands that can be used in the Telegram bot.
+
   - **/help**
     - Displays a list of available commands.
-    - 
+    - ![](/assets/img/help_command.png)
+  - **/start**
+    - ![](/assets/img/start_command.png)
+  - **/submit**
+    - ![](/assets/img/submit_command.png)
+3. **Background service**
+> Calls the external endpoints of the configured exchanges to retrieve tradeable symbols and associated details regarding the minimum and maximum leverage that can be used, repeated on a 24 hour interval.
+
+4. MongoDB
+> Used to store user credentials needed to authenticate, api keys and secrets for chosen exchanges, and order submission details.
+
+5. Redis
+> Serves as a cache to store the authentication token needed for order manager’s (Fast API) authenticated endpoints after authentication credentials and various symbol details for integrated exchanges.
+
+6. Kafka
+> This topic queue is included in the docker-compose file but it currently isn't being utilized. Perhaps I'll use it to store all my opening and closing orders and have some tool (unknown for now) retrieve the data from there so I can further analyze my P&L performance across exchanges.
+
+
+    
     
